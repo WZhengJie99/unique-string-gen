@@ -5,53 +5,237 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Unique String Generator</title>
-    <link rel="stylesheet" href="main.css">
-    <link rel="stylesheet" type='text/css' href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
-
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/background.css">
 </head>
 
 <body>
+    <div id="bg-rubik" aria-hidden="true"></div>
     <div class="container">
         <h1>Unique String Generator</h1>
-        <div class="link-wrapper">
-            <a href="https://github.com/WZhengJie99" target="_blank" rel="noopener noreferrer">
-                <p>By WZhengJie99</p>
-            </a>
+
+        <div class="panels">
+        <section id="generatorPanel" class="card">
+            <h2 class="card-title">Random String</h2>
+            <form id="stringForm">
+                <label for="length">Length:</label>
+                <input type="number" id="length" name="length" min="1" max="100" value="16" required>
+
+                <p>Select character types:</p>
+                <label class="custom-checkbox">
+                    <input type="checkbox" id="lowercase" name="charType" value="lowercase" checked>
+                    <span class="checkbox-btn"></span>
+                    Lowercase Letters
+                </label>
+                <label class="custom-checkbox">
+                    <input type="checkbox" id="capital" name="charType" value="capital">
+                    <span class="checkbox-btn"></span>
+                    Capital Letters
+                </label>
+                <label class="custom-checkbox">
+                    <input type="checkbox" id="numbers" name="charType" value="numbers">
+                    <span class="checkbox-btn"></span>
+                    Numbers
+                </label>
+                <label class="custom-checkbox">
+                    <input type="checkbox" id="binary" name="charType" value="binary">
+                    <span class="checkbox-btn"></span>
+                    Binary
+                </label>
+
+                <button type="button" id="generateBtn">Generate</button>
+            </form>
+            <div id="result">
+                <h3>Generated String:</h3>
+                <p id="generatedString"></p>
+                <div id="entropyMeter" class="meter">
+                    <div class="meter-track">
+                        <div id="entropyFill" class="meter-fill"></div>
+                    </div>
+                    <p id="entropyLabel" class="meter-label">0 bits of entropy</p>
+                </div>
+                <p id="generatorError" class="error-text" hidden></p>
+                <button type="button" id="copyGeneratedBtn">Copy</button>
+            </div>
+        </section>
+
+        <section id="hasherPanel" class="card">
+            <h2 class="card-title">Hash Generator</h2>
+            <label for="hashInput">Text to hash:</label>
+            <textarea id="hashInput" rows="2" placeholder="Type or paste text here"></textarea>
+
+            <label for="algorithm">Algorithm:</label>
+            <select id="algorithm">
+                <option value="MD5">MD5</option>
+                <option value="SHA-1">SHA-1</option>
+                <option value="SHA-256" selected>SHA-256</option>
+                <option value="SHA-384">SHA-384</option>
+                <option value="SHA-512">SHA-512</option>
+                <option value="SHA3-256">SHA3-256</option>
+                <option value="SHA3-512">SHA3-512</option>
+            </select>
+            <p id="algorithmDescription" class="algo-description"></p>
+
+            <button type="button" id="hashBtn">Hash</button>
+
+            <div id="hashResult">
+                <h3>Hash:</h3>
+                <div id="hashIdenticon" class="identicon" aria-hidden="true"></div>
+                <p id="hashOutput" class="hash-output"></p>
+                <p id="hashError" class="error-text" hidden></p>
+                <button type="button" id="copyHashBtn">Copy</button>
+            </div>
+        </section>
+
+        <section id="passwordPanel" class="card">
+            <h2 class="card-title">Password Strength</h2>
+            <label for="passwordInput">Password:</label>
+            <div class="password-field">
+                <input type="password" id="passwordInput" placeholder="Type a password">
+                <button type="button" id="togglePasswordBtn">Show</button>
+            </div>
+            <div id="passwordMeter" class="radial-meter">
+                <div id="passwordMeterRing" class="radial-meter-ring">
+                    <div class="radial-meter-hole">
+                        <span id="passwordMeterValue" class="radial-meter-value">0</span>
+                        <span class="radial-meter-unit">bits</span>
+                    </div>
+                </div>
+                <p id="passwordMeterLabel" class="meter-label weak">Weak</p>
+            </div>
+            <div id="passwordRequirements" class="requirement-chips">
+                <span class="chip" data-req="length">8+ characters</span>
+                <span class="chip" data-req="upper">Uppercase</span>
+                <span class="chip" data-req="number">Number</span>
+                <span class="chip" data-req="symbol">Symbol</span>
+            </div>
+            <div id="passwordCharsetChart" class="charset-chart" role="group" aria-label="Character set size contributed by each character type present in the password">
+                <div class="charset-bar-col">
+                    <span class="charset-bar-value">26</span>
+                    <div class="charset-bar-track">
+                        <div class="charset-bar-fill" data-req="upper" style="height: 0%" title="Uppercase — 26 possible characters"></div>
+                    </div>
+                    <span class="charset-bar-label">Uppercase</span>
+                </div>
+                <div class="charset-bar-col">
+                    <span class="charset-bar-value">10</span>
+                    <div class="charset-bar-track">
+                        <div class="charset-bar-fill" data-req="number" style="height: 0%" title="Number — 10 possible characters"></div>
+                    </div>
+                    <span class="charset-bar-label">Number</span>
+                </div>
+                <div class="charset-bar-col">
+                    <span class="charset-bar-value">32</span>
+                    <div class="charset-bar-track">
+                        <div class="charset-bar-fill" data-req="symbol" style="height: 0%" title="Symbol — 32 possible characters"></div>
+                    </div>
+                    <span class="charset-bar-label">Symbol</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="uuidPanel" class="card">
+            <h2 class="card-title">UUID Generator</h2>
+            <label for="uuidVersionSelect">Version:</label>
+            <select id="uuidVersionSelect">
+                <option value="v4">v4 (Random)</option>
+                <option value="v7">v7 (Time-ordered)</option>
+            </select>
+            <button type="button" id="generateUuidBtn">Generate</button>
+            <div id="uuidResult">
+                <div id="uuidBarcode" class="uuid-barcode" aria-hidden="true"></div>
+            </div>
+            <div id="uuidFormats" class="uuid-formats">
+                <label for="uuidFormatSelect">Format:</label>
+                <select id="uuidFormatSelect">
+                    <option value="standard">Standard</option>
+                    <option value="plain">No dashes</option>
+                    <option value="upper">Uppercase</option>
+                    <option value="urn">URN</option>
+                    <option value="braces">Braces</option>
+                </select>
+                <p id="uuidFormatValue" class="hash-output"></p>
+                <button type="button" id="copyUuidFormatBtn">Copy</button>
+            </div>
+            <div class="uuid-validate">
+                <label for="uuidValidateInput">Validate a UUID:</label>
+                <input type="text" id="uuidValidateInput" placeholder="Paste a UUID to inspect">
+                <button type="button" id="uuidValidateBtn">Validate</button>
+                <p id="uuidValidateError" class="error-text" hidden></p>
+                <div id="uuidValidateResult" class="uuid-validate-result" hidden>
+                    <p><span class="uuid-validate-label">Version:</span> <span id="uuidValidateVersion"></span></p>
+                    <p><span class="uuid-validate-label">Variant:</span> <span id="uuidValidateVariant"></span></p>
+                    <p id="uuidValidateTimestampRow" hidden><span class="uuid-validate-label">Timestamp:</span> <span id="uuidValidateTimestamp"></span></p>
+                </div>
+            </div>
+        </section>
+
+        <section id="encodePanel" class="card">
+            <h2 class="card-title">Base64 / URL Codec</h2>
+            <label for="encodeInput">Text:</label>
+            <textarea id="encodeInput" rows="2" placeholder="Type or paste text here"></textarea>
+
+            <label for="encodeMode">Operation:</label>
+            <select id="encodeMode">
+                <option value="base64-encode">Base64 Encode</option>
+                <option value="base64-decode">Base64 Decode</option>
+                <option value="url-encode">URL Encode</option>
+                <option value="url-decode">URL Decode</option>
+            </select>
+
+            <button type="button" id="encodeBtn">Convert</button>
+
+            <div id="encodeResult">
+                <h3>Result:</h3>
+                <p id="encodeOutput" class="hash-output"></p>
+                <p id="encodeError" class="error-text" hidden></p>
+                <div id="encodeSizeCompare" class="diverging-bar">
+                    <div class="diverging-bar-track">
+                        <div class="diverging-bar-half diverging-bar-half--left">
+                            <div id="encodeSizeInputFill" class="diverging-bar-fill diverging-bar-fill--input"></div>
+                        </div>
+                        <div class="diverging-bar-center-line"></div>
+                        <div class="diverging-bar-half diverging-bar-half--right">
+                            <div id="encodeSizeOutputFill" class="diverging-bar-fill diverging-bar-fill--output"></div>
+                        </div>
+                    </div>
+                    <div class="diverging-bar-labels">
+                        <span class="diverging-bar-label-group">
+                            <span class="diverging-bar-value"><span id="encodeSizeInputValue"></span></span>
+                            <span class="diverging-bar-name">Input</span>
+                        </span>
+                        <span class="diverging-bar-label-group diverging-bar-label-group--right">
+                            <span class="diverging-bar-value"><span id="encodeSizeOutputValue"></span> <span id="encodeSizeDelta" class="diverging-bar-delta"></span></span>
+                            <span class="diverging-bar-name">Output</span>
+                        </span>
+                    </div>
+                </div>
+                <button type="button" id="copyEncodeBtn">Copy</button>
+            </div>
+        </section>
+
+        <section id="jwtPanel" class="card">
+            <h2 class="card-title">JWT Decoder</h2>
+            <label for="jwtInput">JWT:</label>
+            <textarea id="jwtInput" rows="3" placeholder="Paste a JWT (header.payload.signature)"></textarea>
+            <button type="button" id="decodeJwtBtn">Decode</button>
+
+            <div id="jwtResult">
+                <p id="jwtError" class="error-text" hidden></p>
+                <p id="jwtExpiry" class="note-text" hidden></p>
+                <h3>Header:</h3>
+                <pre id="jwtHeader" class="json-output"></pre>
+                <h3>Payload:</h3>
+                <pre id="jwtPayload" class="json-output"></pre>
+            </div>
+            <p class="note-text">Decoded locally in your browser — the signature is not verified.</p>
+        </section>
         </div>
-        <form id="stringForm">
-            <label for="length">Length:</label>
-            <input type="number" id="length" name="length" min="1" max="100" required>
-        
-            <p>Select character types:</p>
-            <label class="custom-checkbox">
-                <input type="checkbox" id="lowercase" name="charType" value="lowercase" checked>
-                <span class="checkbox-btn"></span>
-                Lowercase Letters
-            </label>
-            <label class="custom-checkbox">
-                <input type="checkbox" id="capital" name="charType" value="capital">
-                <span class="checkbox-btn"></span>
-                Capital Letters
-            </label>
-            <label class="custom-checkbox">
-                <input type="checkbox" id="numbers" name="charType" value="numbers">
-                <span class="checkbox-btn"></span>
-                Numbers
-            </label>
-            <label class="custom-checkbox">
-                <input type="checkbox" id="binary" name="charType" value="binary">
-                <span class="checkbox-btn"></span>
-                Binary
-            </label><br>
-        
-            <button type="button" onclick="generateString()">Generate</button>
-        </form>        
-        <div id="result">
-            <h2>Generated String:</h2>
-            <p id="generatedString"></p>
-            <button type="button" onclick="copyToClipboard()">Copy</button>
-            <p id="copyConfirmation">Copied to clipboard!</p>
-        </div>
+
+        <footer class="site-footer">
+            <p>All processing happens locally in your browser — nothing is sent to a server.</p>
+            <p>© <span id="footerYear"></span> · <a href="https://github.com/WZhengJie99" target="_blank" rel="noopener noreferrer">View on GitHub</a></p>
+        </footer>
     </div>
     <!-- [GitHub Corners](https://tholman.com/github-corners/) -->
     <a href="https://github.com/WZhengJie99" target="_blank" rel="noopener noreferrer" class="github-corner" aria-label="View source on GitHub"><svg width="80"
@@ -65,7 +249,8 @@
                 d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
                 fill="currentColor" class="octo-body"></path>
         </svg></a>
-    <script src="script.js"></script>
+    <script type="module" src="js/main.js"></script>
+    <script src="js/background.js"></script>
 </body>
 
 </html>
